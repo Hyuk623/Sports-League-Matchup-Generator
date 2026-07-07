@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>스포츠 경기 보드판</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <svg aria-hidden="true" class="icon-sprite">
+      <symbol id="icon-plus" viewBox="0 0 24 24">
+        <path d="M12 5v14M5 12h14" />
+      </symbol>
+      <symbol id="icon-trash" viewBox="0 0 24 24">
+        <path d="M3 6h18M8 6V4h8v2M8 10v9M16 10v9M5 6l1 15h12l1-15" />
+      </symbol>
+      <symbol id="icon-download" viewBox="0 0 24 24">
+        <path d="M12 3v12M7 10l5 5 5-5M5 21h14" />
+      </symbol>
+      <symbol id="icon-upload" viewBox="0 0 24 24">
+        <path d="M12 21V9M7 14l5-5 5 5M5 3h14" />
+      </symbol>
+      <symbol id="icon-print" viewBox="0 0 24 24">
+        <path d="M7 8V3h10v5M7 17H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2M7 14h10v7H7z" />
+      </symbol>
+      <symbol id="icon-shuffle" viewBox="0 0 24 24">
+        <path d="M16 3h5v5M4 7h3c2.5 0 4.5 2 6 5s3.5 5 6 5h2M21 16v5h-5M4 17h3c1.4 0 2.6-.6 3.6-1.7M13.5 8.7C15 6.1 16.8 5 19 5h2" />
+      </symbol>
+      <symbol id="icon-check" viewBox="0 0 24 24">
+        <path d="M20 6 9 17l-5-5" />
+      </symbol>
+    </svg>
+
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand-block">
+          <div class="court-mark" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <div>
+            <p class="eyebrow">리그 · 토너먼트 · 단일 경기</p>
+            <h1>스포츠 경기 보드판</h1>
+          </div>
+        </div>
+
+        <div class="top-actions">
+          <button class="icon-button" type="button" data-action="export" title="내보내기" aria-label="내보내기">
+            <svg><use href="#icon-download"></use></svg>
+          </button>
+          <label class="icon-button file-button" title="불러오기" aria-label="불러오기">
+            <svg><use href="#icon-upload"></use></svg>
+            <input id="import-file" type="file" accept="application/json" />
+          </label>
+          <button class="icon-button" type="button" data-action="print" title="인쇄" aria-label="인쇄">
+            <svg><use href="#icon-print"></use></svg>
+          </button>
+        </div>
+      </header>
+
+      <main class="dashboard">
+        <aside class="sidebar">
+          <section class="tool-panel">
+            <div class="section-title">
+              <h2>대회</h2>
+              <button class="text-button danger" type="button" data-action="reset-all">새 보드</button>
+            </div>
+            <label class="field">
+              <span>이름</span>
+              <input id="event-title" type="text" maxlength="36" />
+            </label>
+            <label class="field">
+              <span>종목</span>
+              <select id="sport-select">
+                <option value="축구">축구</option>
+                <option value="농구">농구</option>
+                <option value="배구">배구</option>
+                <option value="피구">피구</option>
+                <option value="풋살">풋살</option>
+                <option value="야구">야구</option>
+                <option value="배드민턴">배드민턴</option>
+                <option value="탁구">탁구</option>
+                <option value="기타">기타</option>
+              </select>
+            </label>
+          </section>
+
+          <section class="tool-panel">
+            <div class="section-title">
+              <h2>팀</h2>
+              <button class="icon-button small" type="button" data-action="shuffle-teams" title="팀 순서 섞기" aria-label="팀 순서 섞기">
+                <svg><use href="#icon-shuffle"></use></svg>
+              </button>
+            </div>
+            <form id="team-form" class="team-form">
+              <input id="team-name" type="text" maxlength="18" placeholder="팀 이름" aria-label="팀 이름" />
+              <input id="team-color" type="color" value="#0f766e" aria-label="팀 색상" />
+              <button class="icon-button add-button" type="submit" title="팀 추가" aria-label="팀 추가">
+                <svg><use href="#icon-plus"></use></svg>
+              </button>
+            </form>
+            <div id="team-list" class="team-list"></div>
+          </section>
+
+          <section class="tool-panel">
+            <div class="section-title">
+              <h2>경기 만들기</h2>
+            </div>
+            <div class="generator-stack">
+              <div class="mini-grid">
+                <label class="field">
+                  <span>리그</span>
+                  <select id="league-rounds">
+                    <option value="1">1회전</option>
+                    <option value="2">2회전</option>
+                    <option value="3">3회전</option>
+                  </select>
+                </label>
+                <label class="field">
+                  <span>코트</span>
+                  <input id="court-count" type="number" min="1" max="12" value="1" inputmode="numeric" />
+                </label>
+              </div>
+              <label class="field">
+                <span>토너먼트</span>
+                <select id="tournament-mode">
+                  <option value="single">단판</option>
+                  <option value="twoLeg">홈앤드어웨이</option>
+                </select>
+              </label>
+              <button class="primary-button" type="button" data-action="generate-league">리그표 생성</button>
+              <button class="primary-button secondary" type="button" data-action="generate-tournament">토너먼트 생성</button>
+            </div>
+          </section>
+
+          <section class="tool-panel">
+            <div class="section-title">
+              <h2>승점 방식</h2>
+            </div>
+            <label class="field">
+              <span>계산 방식</span>
+              <select id="points-mode">
+                <option value="standard">일반 경기</option>
+                <option value="setRatio">세트제 경기</option>
+                <option value="winnerOnly">승자만 승점</option>
+              </select>
+            </label>
+            <div id="standard-points" class="points-grid" aria-label="일반 승점 설정">
+              <label class="field compact">
+                <span>승리팀</span>
+                <input id="win-points" type="number" min="0" max="20" inputmode="numeric" />
+              </label>
+              <label class="field compact">
+                <span>무승부</span>
+                <input id="draw-points" type="number" min="0" max="20" inputmode="numeric" />
+              </label>
+              <label class="field compact">
+                <span>패배팀</span>
+                <input id="loss-points" type="number" min="0" max="20" inputmode="numeric" />
+              </label>
+            </div>
+            <div id="set-points" class="set-points-grid" aria-label="세트제 승점 설정">
+              <label class="field compact">
+                <span>완승 승자</span>
+                <input id="set-clear-win-points" type="number" min="0" max="20" inputmode="numeric" />
+              </label>
+              <label class="field compact">
+                <span>완승 패자</span>
+                <input id="set-clear-loss-points" type="number" min="0" max="20" inputmode="numeric" />
+              </label>
+              <label class="field compact">
+                <span>접전 승자</span>
+                <input id="set-close-win-points" type="number" min="0" max="20" inputmode="numeric" />
+              </label>
+              <label class="field compact">
+                <span>접전 패자</span>
+                <input id="set-close-loss-points" type="number" min="0" max="20" inputmode="numeric" />
+              </label>
+            </div>
+            <label class="field">
+              <span>순위 기준</span>
+              <select id="ranking-preset">
+                <option value="standard">승점 · 득실 · 다득점</option>
+                <option value="winsFirst">승점 · 다승 · 득실</option>
+                <option value="goalsFirst">승점 · 다득점 · 득실</option>
+              </select>
+            </label>
+            <label class="field">
+              <span>토너먼트 동점</span>
+              <select id="draw-resolver">
+                <option value="none">승자 대기</option>
+                <option value="home">홈팀 승</option>
+                <option value="away">원정팀 승</option>
+              </select>
+            </label>
+            <label class="toggle-row">
+              <input id="away-goals" type="checkbox" />
+              <span>원정 다득점제</span>
+            </label>
+          </section>
+
+          <section class="tool-panel">
+            <div class="section-title">
+              <h2>단일 경기</h2>
+            </div>
+            <form id="quick-form" class="quick-form">
+              <select id="quick-home" aria-label="홈 팀"></select>
+              <select id="quick-away" aria-label="원정 팀"></select>
+              <button class="primary-button" type="submit">추가</button>
+            </form>
+          </section>
+        </aside>
+
+        <section class="workspace">
+          <div class="score-strip">
+            <div>
+              <span id="stat-teams">0</span>
+              <small>팀</small>
+            </div>
+            <div>
+              <span id="stat-matches">0</span>
+              <small>경기</small>
+            </div>
+            <div>
+              <span id="stat-complete">0</span>
+              <small>완료</small>
+            </div>
+            <div>
+              <span id="stat-leader">-</span>
+              <small>선두</small>
+            </div>
+          </div>
+
+          <nav class="tabs" aria-label="보기">
+            <button class="tab is-active" type="button" data-view="league">리그표</button>
+            <button class="tab" type="button" data-view="bracket">토너먼트</button>
+            <button class="tab" type="button" data-view="standings">순위표</button>
+            <button class="tab" type="button" data-view="matches">전체 경기</button>
+          </nav>
+
+          <section id="league-view" class="view is-active">
+            <div class="view-header">
+              <div>
+                <h2>리그표</h2>
+                <p id="league-label"></p>
+              </div>
+              <div id="league-round-tabs" class="filter-row" role="group" aria-label="리그 라운드"></div>
+            </div>
+            <div id="league-board" class="league-board"></div>
+          </section>
+
+          <section id="bracket-view" class="view">
+            <div class="view-header">
+              <div>
+                <h2>토너먼트</h2>
+                <p id="bracket-label"></p>
+              </div>
+            </div>
+            <div id="bracket-board" class="bracket-board"></div>
+          </section>
+
+          <section id="standings-view" class="view">
+            <div class="view-header">
+              <div>
+                <h2>순위표</h2>
+                <p id="standing-label"></p>
+              </div>
+              <button class="text-button" type="button" data-action="clear-scores">점수 비우기</button>
+            </div>
+            <div class="table-wrap">
+              <table class="standings-table">
+                <thead>
+                  <tr>
+                    <th>순위</th>
+                    <th>팀</th>
+                    <th>경기</th>
+                    <th>승</th>
+                    <th>무</th>
+                    <th>패</th>
+                    <th>득</th>
+                    <th>실</th>
+                    <th>득실</th>
+                    <th>승점</th>
+                  </tr>
+                </thead>
+                <tbody id="standings-body"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section id="matches-view" class="view">
+            <div class="view-header">
+              <div>
+                <h2>전체 경기</h2>
+                <p id="match-count-label"></p>
+              </div>
+              <div class="filter-row" role="group" aria-label="경기 필터">
+                <button class="chip is-active" type="button" data-filter="all">전체</button>
+                <button class="chip" type="button" data-filter="league">리그</button>
+                <button class="chip" type="button" data-filter="tournament">토너먼트</button>
+                <button class="chip" type="button" data-filter="free">단일</button>
+              </div>
+            </div>
+            <div id="match-list" class="match-list"></div>
+          </section>
+        </section>
+      </main>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
+
