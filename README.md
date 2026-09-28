@@ -10,3 +10,5 @@
 
 `.github/workflows/pages.yml`은 `main` 또는 `master` 브랜치에 push될 때 `outputs/pe-class-score-app` 폴더를 GitHub Pages로 배포합니다.
 저장소의 Pages 설정에서 Source가 `GitHub Actions`로 되어 있어야 합니다.
+
+https://hyuk623.github.io/Sports-League-Matchup-Generator/
